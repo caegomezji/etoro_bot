@@ -1,0 +1,9 @@
+.env
+
+develop.ipynb
+run_bot.py
+
+*.csv
+*.log
+
+*/__pycache__
