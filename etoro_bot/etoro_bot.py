@@ -49,7 +49,7 @@ def load_driver( gui = False):
 
     options.add_argument(f"--user-agent={user_agent}")
 
-    driver = uc.Chrome( version_main = 120 , browser_executable_path="/usr/bin/chromium-browser",
+    driver = uc.Chrome( 
         desired_capabilities=desired_capabilities, options=options)
     return driver
 
