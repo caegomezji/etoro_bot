@@ -5,10 +5,10 @@ RUN apt update && apt install -y chromium=120.0.6099.129-1~deb12u1
 RUN pip install -U pip
  
 RUN pip install \
-    selenium==4.10 \
-    undetected-chromedriver==3.5 \
-    fastapi==0.108 \
-    uvicorn==0.25
+    selenium==4.16.0 \
+    undetected-chromedriver==3.5.4 \
+    fastapi \
+    uvicorn
 
 RUN mkdir -p /usr/app
 
@@ -20,4 +20,4 @@ COPY ./ /usr/app
 
 #ENTRYPOINT ["/bin/bash"]
 
-ENTRYPOINT["uvicorn" , "etoro_bot.main:app"]
+ENTRYPOINT ["uvicorn" , "etoro_bot.main:app"]
