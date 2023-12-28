@@ -2,10 +2,13 @@
 FROM python:3.10
 
 RUN apt update && apt install -y chromium=120.0.6099.129-1~deb12u1
+RUN pip install -U pip
  
 RUN pip install \
-    selenium==4.10.0 \
-    undetected-chromedriver==3.5.4
+    selenium==4.10 \
+    undetected-chromedriver==3.5 \
+    fastapi==0.108 \
+    uvicorn==0.25
 
 RUN mkdir -p /usr/app
 
@@ -13,5 +16,8 @@ WORKDIR /usr/app
 
 COPY ./ /usr/app
 
-ENTRYPOINT ["python3"   , "-m" , "etoro_bot.etoro_bot"]
+#ENTRYPOINT ["python3"   , "-m" , "etoro_bot.etoro_bot"]
+
 #ENTRYPOINT ["/bin/bash"]
+
+ENTRYPOINT["uvicorn" , "etoro_bot.main:app"]
