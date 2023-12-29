@@ -7,3 +7,4 @@ run_bot.py
 *.log
 
 */__pycache__
+/.vscode
