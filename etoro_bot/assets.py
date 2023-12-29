@@ -36,7 +36,7 @@ if config.enable_telegram:
 
 class BotException(Exception):
 
-    def __init__(self, message):
+    def __init__(self, message: str ):
         super().__init__(message)
         logging.error(message)
         if config.enable_telegram:

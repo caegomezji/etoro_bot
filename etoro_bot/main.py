@@ -1,7 +1,9 @@
-from typing import Union
 
 from fastapi import FastAPI
+import traceback
+
 from etoro_bot.etoro_bot import TradeActions , launch_bot
+from etoro_bot.assets import BotException
 
 app = FastAPI()
 
@@ -13,6 +15,9 @@ def read_root():
 
 @app.post("/trade")
 def trade(trade_action : TradeActions , symbol : str):
-    launch_bot(trade_action , symbol=symbol , gui=False)
+    try:
+        launch_bot(trade_action , symbol=symbol , gui=False)
+    except Exception:
+        raise BotException("Critical error on app: " + traceback )
     return  trade_action
     
