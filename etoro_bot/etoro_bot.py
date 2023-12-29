@@ -15,8 +15,7 @@ from selenium.webdriver import ActionChains
 import os
 import subprocess
 
-from etoro_bot.config import Config
-config = Config()
+from etoro_bot import config
 
 from enum import Enum
 
