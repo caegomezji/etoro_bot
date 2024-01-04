@@ -1,8 +1,25 @@
 
 import logging
+import datetime
 
 from etoro_bot import config
 import requests
+
+logger = logging.getLogger("etoro_bot")
+logger.setLevel(logging.DEBUG)
+
+# handler to file
+log_filename = "etoro_bot.{:%Y-%m-%d}.log".format(datetime.datetime.now())
+handler = logging.FileHandler(log_filename)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s %(pathname)s(%(lineno)d):\t%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+# create console handler and set level to debug
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 
 class TelegramSender():
@@ -25,7 +42,7 @@ class TelegramSender():
                     "ok": False ,
                     "message": "Error on telegram API"
                 }
-        logging.warning(message)
+        logger.warning( message )
         return message 
 
 
@@ -36,9 +53,10 @@ if config.enable_telegram:
 
 class BotException(Exception):
 
-    def __init__(self, message: str ):
-        super().__init__(message)
-        logging.error(message)
+    def __init__(self, message: str, *args ):
+        super().__init__(message , args)
+        self.message = message
+        logger.error(message)
         if config.enable_telegram:
             telegram.send_message(message)
 
