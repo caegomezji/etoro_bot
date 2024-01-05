@@ -314,8 +314,14 @@ class EtoroBot():
 
             f.write("{},{},{},{}\n".format(
                 symbol, action, value, datetime.datetime.now()))
+        
     
         return {"reponse": "ok"}
+    
+    def end_and_close(self):
+        self.driver.close()
+        self.driver.quit()
+        logger.debug("Exit chromium")
 
 
 if __name__ == '__main__':

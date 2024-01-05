@@ -43,5 +43,8 @@ def trade(trade_action_action : TradeActionParameters):
         reponse = etoro_bot.launch_bot(trade_action_action.trade_action , symbol=trade_action_action.symbol)
     except Exception:
         raise BotException(traceback.format_exc())
+    finally:
+        etoro_bot.end_and_close()
+        del etoro_bot
     return reponse
     
