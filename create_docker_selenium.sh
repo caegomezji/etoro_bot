@@ -2,7 +2,8 @@
 
 docker build -t caegomezji/spx500_selenium .
 
-docker run -dt --rm \
+docker run -dt \
+    --restart always \
     --name=etoro_bot \
     --net=host \
     --env-file=.env \
