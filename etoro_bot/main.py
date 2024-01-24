@@ -15,6 +15,7 @@ from pydantic import BaseModel
 class TradeActionParameters(BaseModel):
     trade_action: TradeActions
     symbol: str
+    virtual_portfolio : bool = True
 
 app = FastAPI()
 
@@ -40,7 +41,11 @@ def trade(trade_action_action : TradeActionParameters):
         logger.debug(trade_action_action.trade_action )
         logger.debug(trade_action_action.symbol )
         etoro_bot = EtoroBot()
-        reponse = etoro_bot.launch_bot(trade_action_action.trade_action , symbol=trade_action_action.symbol)
+        reponse = etoro_bot.launch_bot(
+            trade_action_action.trade_action ,
+            symbol=trade_action_action.symbol, 
+            virtual_portfolio=trade_action_action.virtual_portfolio)
+
     except Exception:
         raise BotException(traceback.format_exc())
     finally:
