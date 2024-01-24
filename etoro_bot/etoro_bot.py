@@ -284,7 +284,7 @@ class EtoroBot():
         time.sleep(1)
 
 
-    def launch_bot(self,action :  TradeActions, symbol ):
+    def launch_bot(self,action :  TradeActions, symbol , virtual_portfolio = True):
         user = config.etoro_user
         pwd = config.etoro_pwd
         #driver = load_driver(gui = gui)
@@ -293,8 +293,9 @@ class EtoroBot():
 
         self.login(self.driver, user, pwd)
         time.sleep(6)
-        self.go_to_virtual_portfolio(self.driver)
-        time.sleep(3)
+        if (virtual_portfolio):
+            self.go_to_virtual_portfolio(self.driver)
+            time.sleep(3)
         value = 50
 
         if action == TradeActions.hold:
@@ -327,4 +328,4 @@ class EtoroBot():
 if __name__ == '__main__':
     action = TradeActions.hold
     etoro_bot = EtoroBot()
-    etoro_bot.launch_bot(action , symbol="SPX500" )
+    etoro_bot.launch_bot(action , symbol="SPX500" , virtual_portfolio= True)
