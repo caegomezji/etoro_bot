@@ -52,7 +52,7 @@ class EtoroBot():
         options.add_argument(f"--user-agent={user_agent}")
         print( f"gui: {gui}")
         driver = uc.Chrome( headless=not gui,
-            desired_capabilities=desired_capabilities, options=options)
+            desired_capabilities=desired_capabilities, options=options, version_main=120)
         return driver
 
     def login(self, driver, user, pwd):
