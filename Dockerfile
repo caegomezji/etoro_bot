@@ -1,7 +1,8 @@
 # FROM ultrafunk/undetected-chromedriver:3.20-chrome-lateinstall
 FROM python:3.10
 
-RUN apt update && apt install -y chromium=120.0.6099.129-1~deb12u1
+RUN apt update && apt install -y chromium=120.0.6099.224-1~deb12u1
+#=120.0.6099.129-1~deb12u1
 RUN pip install -U pip
  
 RUN pip install \
