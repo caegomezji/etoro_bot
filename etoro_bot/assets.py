@@ -1,6 +1,9 @@
 
 import logging
 import datetime
+from logging.handlers import TimedRotatingFileHandler
+import os
+
 
 from etoro_bot import config
 import requests
@@ -8,9 +11,12 @@ import requests
 logger = logging.getLogger("etoro_bot")
 logger.setLevel(logging.DEBUG)
 
+os.system("mkdir -p logs")
+
 # handler to file
-log_filename = "etoro_bot.{:%Y-%m-%d}.log".format(datetime.datetime.now())
-handler = logging.FileHandler(log_filename)
+log_filename = "logs/etoro_bot.{:%Y-%m-%d}.log".format(datetime.datetime.now())
+#handler = logging.FileHandler(log_filename)
+handler = TimedRotatingFileHandler(log_filename, when="midnight", interval=1)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s %(pathname)s(%(lineno)d):\t%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
