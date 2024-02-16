@@ -5,6 +5,7 @@ run_bot.py
 
 *.csv
 *.log
+*.log.*
 
 */__pycache__
 /.vscode
