@@ -91,12 +91,54 @@ class EtoroBot():
     def find_elements_by_data_etoro_automation_id(self,driver_element, automation_id):
         return driver_element.find_elements(By.CSS_SELECTOR, '[data-etoro-automation-id="{}"]'.format(automation_id))
 
+    def _close_position(self, order_cell):
 
-    def close_position(self,driver, symbols):
-        driver.get("https://www.etoro.com/portfolio/positions")
+        buttons = self.find_elements_by_automation_id(
+            order_cell, "group-actions-dropdown-3dots")
+        assert len(buttons) == 1, " it brings more than 1 button"
+        button = buttons[0]
+        button.click()
+
+        time.sleep(1)
+
+        dropdowns = self.find_elements_by_automation_id(
+            self.driver, "group-actions-instrument-container")
+        assert len(dropdowns) == 1, " it brings more than 1 dropdown"
+        dropdown = dropdowns[0]
+
+        spans = dropdown.find_elements(By.TAG_NAME, "span")
+        assert len(spans) != 0, " it brings more than 1 span"
+
+        for span in spans:
+            print(span.text)
+            if span.text == "Close All":
+                span.click()
+
+                time.sleep(1)
+
+                close_buttons = self.find_elements_by_data_etoro_automation_id(
+                    self.driver, "close-all-positions-closs-all-button")
+                print(close_buttons)
+                assert len(
+                    close_buttons) == 1, " it brings more than 1 button"
+                close_button = close_buttons[0]
+
+                current_value_spans = self.find_elements_by_data_etoro_automation_id(self.driver, "close-all-positions-last-price-value")
+                assert len(current_value_spans) == 1, f" it brong {current_value_spans} current value spans"
+                current_value_span = current_value_spans[0]
+                current_value= float(current_value_span.text.strip().replace("$" , ""))
+
+                close_button.click()
+                time.sleep(1)
+                return current_value
+
+
+    def _close_position_get_active_orders_cells(self ):
+
+        self.driver.get("https://www.etoro.com/portfolio/positions")
         time.sleep(6)
         elements = self.find_elements_by_automation_id(
-            driver,  "watchlist-grid-instruments-list")
+            self.driver,  "watchlist-grid-instruments-list")
         assert elements != None, "elements is None"
         assert len(elements) > 0, "elements is empty"
         # driver.find_elements
@@ -115,47 +157,23 @@ class EtoroBot():
                 print("symbol" , symbol)
                 order[symbol] = e
                 index += 1
+        return order
+        
+    def close_positions(self, symbols):
+
+        orders = self._close_position_get_active_orders_cells()
 
         for symbol in symbols:
-            try:
-                assert symbol in order.keys(), "{} not found".format(symbol)
-
-                buttons = self.find_elements_by_automation_id(
-                    order[symbol], "group-actions-dropdown-3dots")
-                assert len(buttons) == 1, " it brings more than 1 button"
-                button = buttons[0]
-                button.click()
-
-                time.sleep(1)
-
-                dropdowns = self.find_elements_by_automation_id(
-                    driver, "group-actions-instrument-container")
-                assert len(dropdowns) == 1, " it brings more than 1 dropdown"
-                dropdown = dropdowns[0]
-
-                spans = dropdown.find_elements(By.TAG_NAME, "span")
-                assert len(spans) != 0, " it brings more than 1 span"
-
-                for span in spans:
-                    print(span.text)
-                    if span.text == "Close All":
-                        span.click()
-
-                        time.sleep(1)
-
-                        close_buttons = self.find_elements_by_data_etoro_automation_id(
-                            driver, "close-all-positions-closs-all-button")
-                        print(close_buttons)
-                        assert len(
-                            close_buttons) == 1, " it brings more than 1 button"
-                        close_button = close_buttons[0]
-
-                        close_button.click()
-                        time.sleep(1)
-
+            try: 
+                assert symbol in orders.keys(), "{} not found".format(symbol)
+                current_value = self._close_position(orders[symbol])
+                orders[symbol] = current_value
             except Exception as e:
+                orders[symbol] = -1
                 print("error", e)
                 pass
+        return orders
+
 
 
     def open_sell_position(self,driver, symbol, price):
@@ -205,16 +223,22 @@ class EtoroBot():
         assert len(entry_order_buttons) == 1, " it brings more than 1 entry button"
         entry_order_button = entry_order_buttons[0]
 
+        current_value_spans = self.find_elements_by_automation_id(driver, "open-position-by-value-current-rate-with-short-symbol")
+        assert len(current_value_spans) == 1, f" it brong {current_value_spans} current value spans"
+        current_value_span = current_value_spans[0]
+        current_value= float(current_value_span.text.strip().replace("$" , ""))
+
         entry_order_button.click()
 
         time.sleep(1)
-
+        return current_value
+    
     def open_buy_position(self,driver, symbol, price):
         tries = 3
         while (tries > 0):
 
             driver.get("https://www.etoro.com/markets/{}/chart".format(symbol.lower()))
-            time.sleep(6)
+            time.sleep(6 + abs(3 - tries))
 
             trade_button_parents_wraps = self.find_elements_by_automation_id(
                 driver, "market-page-header-wrapp")
@@ -263,9 +287,15 @@ class EtoroBot():
         assert len(entry_order_buttons) == 1, " it brings more than 1 entry button"
         entry_order_button = entry_order_buttons[0]
 
+        current_value_spans = self.find_elements_by_automation_id(driver, "open-position-by-value-current-rate-with-short-symbol")
+        assert len(current_value_spans) == 1, f" it brong {current_value_spans} current value spans"
+        current_value_span = current_value_spans[0]
+        current_value= float(current_value_span.text.strip().replace("$" , ""))
+        
         entry_order_button.click()
 
         time.sleep(1)
+        return current_value
 
 
     def go_to_virtual_portfolio(self,driver):
@@ -298,14 +328,15 @@ class EtoroBot():
             time.sleep(3)
         value = 50
 
+        current_value = -1
         if action == TradeActions.hold:
-            self.close_position(self.driver, [symbol])
+            current_value = self.close_positions([symbol])[symbol]
 
         if action == TradeActions.buy:
-            self.open_buy_position(self.driver, symbol, value)
+            current_value = self.open_buy_position(self.driver, symbol, value)
 
         if action == TradeActions.sell:
-            self.open_sell_position(self.driver, symbol, value)
+            current_value = self.open_sell_position(self.driver, symbol, value)
 
         time.sleep(1)
 
@@ -314,10 +345,10 @@ class EtoroBot():
         with open(csv_file_name, 'a') as f:
 
             f.write("{},{},{},{}\n".format(
-                symbol, action, value, datetime.datetime.now()))
+                symbol, action, value, current_value, virtual_portfolio , datetime.datetime.now()))
         
     
-        return {"reponse": "ok"}
+        return {"reponse": "ok" , "current_value" : current_value}
     
     def end_and_close(self):
         self.driver.close()
@@ -326,6 +357,7 @@ class EtoroBot():
 
 
 if __name__ == '__main__':
-    action = TradeActions.hold
-    etoro_bot = EtoroBot()
-    etoro_bot.launch_bot(action , symbol="SPX500" , virtual_portfolio= True)
+    action = TradeActions.buy
+    etoro_bot = EtoroBot( True)
+    result = etoro_bot.launch_bot(action , symbol="SPX500" , virtual_portfolio= True)
+    print(result)
