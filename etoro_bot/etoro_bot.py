@@ -12,8 +12,6 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import datetime
 from selenium.webdriver import ActionChains
-import os
-import subprocess
 
 from etoro_bot import config
 from etoro_bot.assets import logger
@@ -32,6 +30,15 @@ class EtoroBot():
 
     def __init__(self,gui = False):
         self.driver = self.load_driver(gui)
+        user = config.etoro_user
+        pwd = config.etoro_pwd
+        self.in_virtual = False
+        #driver = load_driver(gui = gui)
+        if self.driver == None:
+            raise Exception("Not loaded")
+        self.login(self.driver, user, pwd)
+
+        time.sleep(1)
 
     def load_driver( self, gui = False):
         user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
@@ -314,18 +321,13 @@ class EtoroBot():
         time.sleep(1)
 
 
-    def launch_bot(self,action :  TradeActions, symbol , virtual_portfolio = True):
-        user = config.etoro_user
-        pwd = config.etoro_pwd
-        #driver = load_driver(gui = gui)
-        if self.driver == None:
-            raise Exception("Not loaded")
+    def launch_bot(self, action: TradeActions, symbol , virtual_portfolio = True):
 
-        self.login(self.driver, user, pwd)
-        time.sleep(6)
-        if (virtual_portfolio):
+
+        if (virtual_portfolio and not self.in_virtual):
             self.go_to_virtual_portfolio(self.driver)
             time.sleep(3)
+            self.in_virtual = True
         value = 50
 
         current_value = -1

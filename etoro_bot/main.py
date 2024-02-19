@@ -7,7 +7,7 @@ import traceback
 
 from etoro_bot.etoro_bot import TradeActions , EtoroBot
 from etoro_bot.assets import BotException, logger
-
+from etoro_bot import config
 
 from pydantic import BaseModel
 
@@ -19,6 +19,7 @@ class TradeActionParameters(BaseModel):
 
 app = FastAPI()
 
+etoro_bot = EtoroBot(config.selenium_gui)
 logger.debug("Bot Loaded")
 
 @app.get("/")
@@ -35,12 +36,14 @@ def exception_handler(request: Request, exc: BotException):
 
 @app.post("/trade")
 def trade(trade_action_action : TradeActionParameters):
+
+    global etoro_bot
+
     reponse = {}
     try:
         print(trade_action_action.trade_action , trade_action_action.symbol )
         logger.debug(trade_action_action.trade_action )
         logger.debug(trade_action_action.symbol )
-        etoro_bot = EtoroBot()
         reponse = etoro_bot.launch_bot(
             trade_action_action.trade_action ,
             symbol=trade_action_action.symbol, 
@@ -48,8 +51,8 @@ def trade(trade_action_action : TradeActionParameters):
 
     except Exception:
         raise BotException(traceback.format_exc())
-    finally:
-        etoro_bot.end_and_close()
-        del etoro_bot
+    # finally:
+        # etoro_bot.end_and_close()
+        # del etoro_bot
     return reponse
     
