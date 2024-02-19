@@ -320,15 +320,35 @@ class EtoroBot():
 
         time.sleep(1)
 
+    def go_to_real_portfolio(self,driver):
 
-    def launch_bot(self, action: TradeActions, symbol , virtual_portfolio = True):
+        virtual_buttons = self.find_elements_by_automation_id(
+            driver, "sidenav-switch-to-real")
+        assert len(virtual_buttons) == 1, " it brings more than 1 virtual button"
+        virtual_button = virtual_buttons[0]
+        virtual_button.click()
+        time.sleep(1)
+
+        toogle_button = driver.find_element(By.CLASS_NAME, "toggle-account-button")
+        assert toogle_button != None, " toogle_button is None"
+        toogle_button.click()
+
+        time.sleep(1)
+
+
+    def launch_bot(self, trade_action: TradeActions, symbol , virtual_portfolio = True , value = 50):
+        action = trade_action
 
 
         if (virtual_portfolio and not self.in_virtual):
             self.go_to_virtual_portfolio(self.driver)
             time.sleep(3)
             self.in_virtual = True
-        value = 50
+
+        if ( not virtual_portfolio and self.in_virtual):
+            self.go_to_real_portfolio(self.driver)
+            time.sleep(3)
+            self.in_virtual = False
 
         current_value = -1
         if action == TradeActions.hold:
