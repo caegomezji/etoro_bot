@@ -11,14 +11,15 @@ class TradeActions(str, Enum):
 
 if __name__ == '__main__':
 
-    action = TradeActions.hold
+    action = TradeActions.buy
     symbol = "SPX500"
     reponse = requests.post(
         "http://localhost:1888/trade",
         json={
             "trade_action": action,
             "symbol": symbol,
-            "virtual_portfolio" : True
+            "virtual_portfolio" : True,
+            "value":100
         },
         headers={"accept"  : "application/json",
                 "Content-Type":"application/json"}

@@ -16,10 +16,11 @@ class TradeActionParameters(BaseModel):
     trade_action: TradeActions
     symbol: str
     virtual_portfolio : bool = True
+    value : int = 50
 
 app = FastAPI()
 
-etoro_bot = EtoroBot(config.selenium_gui)
+etoro_bot = EtoroBot(config.selenium_gui ,  )
 logger.debug("Bot Loaded")
 
 @app.get("/")
@@ -41,13 +42,8 @@ def trade(trade_action_action : TradeActionParameters):
 
     reponse = {}
     try:
-        print(trade_action_action.trade_action , trade_action_action.symbol )
-        logger.debug(trade_action_action.trade_action )
-        logger.debug(trade_action_action.symbol )
-        reponse = etoro_bot.launch_bot(
-            trade_action_action.trade_action ,
-            symbol=trade_action_action.symbol, 
-            virtual_portfolio=trade_action_action.virtual_portfolio)
+        logger.info(f"New Movement {trade_action_action}  ")
+        reponse = etoro_bot.launch_bot( **trade_action_action.__dict__) 
 
     except Exception:
         raise BotException(traceback.format_exc())
