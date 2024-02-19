@@ -8,7 +8,7 @@ class Config():
         self.etoro_user = os.getenv('ETORO_USER')
         self.etoro_pwd = os.getenv('ETORO_PWD')
 
-        self.selenium_gui = os.getenv('ENABLE_TELEGRAM', False).lower() in ('true', '1', 't')
+        self.selenium_gui = os.getenv('SELENIUM_GUI', "false").lower() in ('true', '1', 't')
     
         assert self.etoro_user != None, "Not loaded ETORO_USER values"
         assert self.etoro_pwd != None, "Not loaded ETORO_PWD values"
