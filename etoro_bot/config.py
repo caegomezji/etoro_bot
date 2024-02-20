@@ -13,7 +13,7 @@ class Config():
         assert self.etoro_user != None, "Not loaded ETORO_USER values"
         assert self.etoro_pwd != None, "Not loaded ETORO_PWD values"
 
-        self.enable_telegram = os.getenv('ENABLE_TELEGRAM', False).lower() in ('true', '1', 't')
+        self.enable_telegram = os.getenv('ENABLE_TELEGRAM', "false").lower() in ('true', '1', 't')
 
         if self.enable_telegram :
 
