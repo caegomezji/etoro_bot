@@ -133,7 +133,7 @@ class EtoroBot():
                 current_value_spans = self.find_elements_by_data_etoro_automation_id(self.driver, "close-all-positions-last-price-value")
                 assert len(current_value_spans) == 1, f" it brong {current_value_spans} current value spans"
                 current_value_span = current_value_spans[0]
-                current_value= float(current_value_span.text.strip().replace("$" , ""))
+                current_value= float(current_value_span.text.strip().replace("$" , "").replace("£" , ""))
 
                 close_button.click()
                 time.sleep(1)
@@ -233,7 +233,7 @@ class EtoroBot():
         current_value_spans = self.find_elements_by_automation_id(driver, "open-position-by-value-current-rate-with-short-symbol")
         assert len(current_value_spans) == 1, f" it brong {current_value_spans} current value spans"
         current_value_span = current_value_spans[0]
-        current_value= float(current_value_span.text.strip().replace("$" , ""))
+        current_value= float(current_value_span.text.strip().replace("$" , "").replace("£" , ""))
 
         entry_order_button.click()
 
@@ -297,7 +297,7 @@ class EtoroBot():
         current_value_spans = self.find_elements_by_automation_id(driver, "open-position-by-value-current-rate-with-short-symbol")
         assert len(current_value_spans) == 1, f" it brong {current_value_spans} current value spans"
         current_value_span = current_value_spans[0]
-        current_value= float(current_value_span.text.strip().replace("$" , ""))
+        current_value= float(current_value_span.text.strip().replace("$" , "").replace("£" , ""))
         
         entry_order_button.click()
 
