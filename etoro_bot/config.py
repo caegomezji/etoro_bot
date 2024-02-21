@@ -15,10 +15,9 @@ class Config():
 
         self.enable_telegram = os.getenv('ENABLE_TELEGRAM', "false").lower() in ('true', '1', 't')
 
+        self.telegram_token = os.getenv( "TELEGRAM_TOKEN"  , None) 
+        self.telegram_chat_id = os.getenv( "TELEGRAM_CHAT_ID" , None)
         if self.enable_telegram :
-
-            self.telegram_token = os.getenv( "TELEGRAM_TOKEN" ) 
-            self.telegram_chat_id = os.getenv( "TELEGRAM_CHAT_ID" )
 
             assert self.telegram_token != None, "Not loaded TELEGRAM token"
             assert self.telegram_chat_id != None, "Not loaded TELEGRAM chat id"

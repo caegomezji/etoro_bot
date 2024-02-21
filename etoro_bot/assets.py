@@ -35,6 +35,8 @@ class TelegramSender():
 
     def send_message(self, message):
 
+        if not config.enable_telegram:
+            return
         send_text = ('https://api.telegram.org/bot' + self.telegram_token + 
                      '/sendMessage?chat_id=' + self.telegram_chat_id + 
                      '&parse_mode=Markdown&text=' + message)
@@ -52,9 +54,7 @@ class TelegramSender():
         return message 
 
 
-telegram = None
-if config.enable_telegram:
-    telegram = TelegramSender(telegram_token = config.telegram_token, telegram_chat_id= config.telegram_chat_id)
+telegram = TelegramSender(telegram_token = config.telegram_token, telegram_chat_id= config.telegram_chat_id)
 
 
 class BotException(Exception):
@@ -63,7 +63,6 @@ class BotException(Exception):
         super().__init__(message , args)
         self.message = message
         logger.error(message)
-        if config.enable_telegram:
-            telegram.send_message(message)
+        telegram.send_message(message)
 
      
